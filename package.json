@@ -1,5 +1,20 @@
 {
   "dependencies": {
-    "express": "^4.18.2"
-  }
+    "bcryptjs": "^2.4.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^7.5.1",
+    "morgan": "^1.10.0",
+    "nodemon": "^3.0.1"
+  },
+  "name": "login-cookies-fazt",
+  "version": "1.0.0",
+  "description": "An small project about login",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon ./src/index.js"
+  },
+  "author": "Wilmer",
+  "license": "ISC"
 }
