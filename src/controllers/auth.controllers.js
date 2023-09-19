@@ -10,6 +10,13 @@ const register = async (req, res) => {
 		const passwordHash = await bcrypt.hash(password, 10)
 
 	try {
+
+		//guardamos en una constante un valor si el correo del usuario existe
+		const userFound = await User.findOne({ email})
+
+		//Si esa variable que guarda el correo del usuario que esta resgitrando existe, es decir lo haya en la base de datos envia un mensaje de error de el email ya existe
+		if(userFound) return res.status(400).json([ 'email already exists'])
+
 		const newUser = new User({
 			username,
 			email,
