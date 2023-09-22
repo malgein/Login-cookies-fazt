@@ -1,6 +1,10 @@
 const User = require('../models/user.model')
 const bcrypt = require('bcryptjs')
 const createAccessToken = require('../libs/jwt.js')
+//para verificar los tokens
+const jwt = require("jsonwebtoken");
+const TOKEN_SECRET = require('../config')
+
 
 const register = async (req, res) => {
 		const { username, email, password} = req.body
@@ -64,7 +68,12 @@ const login = async(req, res) => {
 	//le pasamos el id del nuevo usuario para que la funcion importada de libs me cree su token sobre el usuario que encntramos en la BD
 	const token = await createAccessToken({id: userFound._id})
 	//finalmente devuelve el usuario que seria el que ya esta logeado
-	res.cookie('token', token)
+	//le dice al navegador que la cookie vendra de un dominio diferente al del frontend
+	res.cookie('token', token, {
+		sameSite: "none",
+		secure: true,
+		httpOnly: false
+	})
 		res.json({
 			id: userFound._id,
 			username: userFound.username,
@@ -102,9 +111,36 @@ const profile = async(req, res) => {
 	})
 }
 
+const verifyToken = async (req, res) => {
+	//verifica el token que llega por headers
+  const { token } = req.cookies;
+	// console.log(token)
+	//si el token no existe responde con un error
+  if (!token) return res.status(401).json({message: 'unauthorized'})
+//jwt verifica el token  si hay un error responde 
+  jwt.verify(token, TOKEN_SECRET, async (error, user) => {
+    if (error) return res.sendStatus(401);
+//guardamos el usuario en una variable aquel que coincide con el id en la bd
+const userFound = await User.findById(user.id);
+	console.log(user)
+		//Si no se consigue coincidencia en la bd retornamos un error
+		//Esta es una buena oportunidad para crear una logica que si no lo encuentra en la bd lo crea
+    if (!userFound) return res.sendStatus(401);
+
+		//en caso contrario devuelve los datos del usuario encontrado, bueno al menos los datos que necesitamos
+    return res.json({
+      id: userFound._id,
+      username: userFound.username,
+      email: userFound.email,
+    });
+  });
+};
+
+
 module.exports = {
 	register,
 	login,
 	logout,
-	profile
+	profile,
+	verifyToken
 }

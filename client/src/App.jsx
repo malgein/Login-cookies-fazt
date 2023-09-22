@@ -3,24 +3,34 @@ import './App.css'
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import { AuthProvider } from "./context/AuthContext";
+import HomePage from "./pages/HomePage";
+import TaskPage from "./pages/TaskPage";
+import TaskFormPage from "./pages/TaskFormPage";
+import ProfilePage from "./pages/ProfilePage";
+import ProtectecRoutes from "./ProtectecRoutes";
+import { TaskProvider } from "./context/TaskContext";
 
 function App() {
   
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <main className="container content-container mx-auto px-10 md:px-0">
-        <Routes>
-          <Route path="/" element={<h1>Home</h1>} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/tasks" element={<h1>Tareas</h1>} />
-          <Route path="/add-task" element={<h1>Agregar tareas</h1>} />
-          <Route path="/tasks/:id" element={<h1>Tarea por id</h1>} />
-          <Route path="/profile" element={<h1>Profile</h1>} />
-        </Routes>
-          </main>
-      </BrowserRouter>
+      <TaskProvider>
+        <BrowserRouter>
+          <main className="container content-container mx-auto px-10 md:px-0">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route element={<ProtectecRoutes />}>
+              <Route path="/tasks" element={<TaskPage />} />
+              <Route path="/add-task" element={<TaskFormPage />} />
+              <Route path="/tasks/:id" element={<TaskFormPage />} />
+              <Route path="/profile" element={<ProfilePage/>} />
+            </Route>
+          </Routes>
+            </main>
+        </BrowserRouter>
+      </TaskProvider>
     </AuthProvider>
   )
 }

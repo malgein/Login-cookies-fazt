@@ -10,6 +10,8 @@ const app = express()
 
 app.use(cors({
     origin: 'http://localhost:5173',
+    //Esto es para que tenga acceso a los headers y que la app pueda leer cookies
+    credentials: true
 }))
 app.use(morgan('dev'))
 app.use(express.json())

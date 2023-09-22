@@ -1,7 +1,8 @@
 import { createContext, useState, useContext, useEffect } from "react";
 //Importamos la funcion que hace la llamada a la parte del backend que crea usuarios
-import {registerRequest, loginRequest} from "../api/auth";
+import {registerRequest, loginRequest, verifyTokenRequest} from "../api/auth";
 import Swal from 'sweetalert2'
+import Cookies from "js-cookie";
 
 const AuthContext = createContext();
 
@@ -20,12 +21,14 @@ export const AuthProvider = ({ children }) => {
 	const [isAuthenticated, setIsAuthenticated] = useState(false)
 	//Estado que guardara los errores que devuelve el backend para ser mostrados correctamente en nuestro frontend
 	const [errors, setErrors] = useState([])
+//Estado que simulara un ambiente de carga mientras  se muestran cierto datosy se monta el componente
+  const [loading, setLoading] = useState(true)
 
 	//Esto es para crear la funcio de registro de forma global y para pasarle a nuestro user goobal los datos del usuario que se esta registrando
   const signup = async (user) => {
 		try {
 			const res = await registerRequest(user);
-			console.log(res.data);
+			// console.log(res.data);
 			setUser(res.data)
 			Swal.fire({
 				icon: 'success',
@@ -42,7 +45,7 @@ export const AuthProvider = ({ children }) => {
   const signin = async (user) => {
     try {
       const res = await loginRequest(user);
-			console.log(res)
+			// console.log(res)
       setUser(res.data);
       setIsAuthenticated(true);
     } catch (error) {
@@ -67,13 +70,53 @@ export const AuthProvider = ({ children }) => {
     }
   }, [errors]);
 
-      
+  //useEffect encargdo de permitir el paso a las rutas protegidas de acuerdo si el usuario esta autenticado o no
+  useEffect(() => {
+    //Verifica si al montar el componente hay una cookie, cuando recargamos la pagina o pasamos a otra parte de la app se borran los estados, esto es para determinar que hay una cookie con un token y por tanto dejarme pasar a las rutas que necesitan autenticacion
+   async function checkLogin(){
+     const cookies = Cookies.get()
+    //  console.log(cookies)
+  
+    //verificca si el token lo tiene el navegador si ya se encuantra autenticado, si no es asi torna el usuario en nulo y el isAuthenticated en false y el loading el false lo que deberia de reedicreccionar al login 
+     if(!cookies.token){
+      setIsAuthenticated(false)
+      setLoading(false)
+      return setUser(null)
+     }
+      // console.log(cookies.token)
+      try {
+        //aplica la funcion de verificar el token que nos traemos de la carpeta api que al mismo tiempo se trae del backend verifica el cookies.token a ver si es valido
+        const res = await verifyTokenRequest(cookies.token);
+        // console.log(res);
+        //si no es valido torna el isauthenticated en false y el estado de carga en false tambien para que se detenga el spiner
+        if (!res.data) {
+          setIsAuthenticated(false);
+          setLoading(false)
+          return
+        }
+        //si es valido  torna el isauthenticated en true le pasa al estador user global el los datos que necesitamos del usuario guardado 
+        setIsAuthenticated(true);
+        setUser(res.data);
+        setLoading(false)
+      } catch (error) {
+        console.log(error)
+        setIsAuthenticated(false);
+        setUser(null)
+        setLoading(false)
+      }
+     
+   }
+   checkLogin();
+  }, [])
+  
+      //exportamos para uso global, el user que representa el usuario que se esta logeando y todos sus datos, la funcion de registro, la funcion de logeo, el estado de carga loading, el estado que indica que esta autenticado o no (isAuthenticated) y los errores
   return (
     <AuthContext.Provider
       value={{
         user,
         signup,
 				signin,
+        loading,
 				isAuthenticated,
 				errors
       }}
