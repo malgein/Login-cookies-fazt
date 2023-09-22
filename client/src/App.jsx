@@ -9,6 +9,7 @@ import TaskFormPage from "./pages/TaskFormPage";
 import ProfilePage from "./pages/ProfilePage";
 import ProtectecRoutes from "./ProtectecRoutes";
 import { TaskProvider } from "./context/TaskContext";
+import Navbar from "./components/Navbar";
 
 function App() {
   
@@ -16,6 +17,7 @@ function App() {
     <AuthProvider>
       <TaskProvider>
         <BrowserRouter>
+          <Navbar />
           <main className="container content-container mx-auto px-10 md:px-0">
           <Routes>
             <Route path="/" element={<HomePage />} />

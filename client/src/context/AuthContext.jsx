@@ -58,6 +58,13 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  //Funcion que se llama para deslogear a; usuario funciona simplemente destruyendo el token de acceso
+  const logout = () =>{
+    Cookies.remove('token')
+    setIsAuthenticated(false)
+    setUser(null)
+  }
+
 	//Funciona como un cronometro limpiador de errorres despues de haber pasado un tiempo
 	useEffect(() => {
 		//Si al menos existe un error y si cambia lo que hay dentro de errors limpia el arrays de errors
@@ -118,6 +125,7 @@ export const AuthProvider = ({ children }) => {
 				signin,
         loading,
 				isAuthenticated,
+        logout,
 				errors
       }}
     >
