@@ -30,6 +30,7 @@ export function TaskProvider({ children}) {
 			const res = await getTasksRequest()
 			//en el estado global tareas colocamos el resultado de traer todas las tareas del endpoint
 			setTasks(res.data)
+			// return res.data
 			// console.log(res)
 		} catch (error) {
 			console.log(error)
@@ -51,9 +52,19 @@ export function TaskProvider({ children}) {
 	//!Esto no es para mostrar una tarea en especifico es mas bien parea editar una tarea en espefico
 	const getTask = async(id) => {
 		const res = await getTaskRequest(id)
-		console.log(res)
+		// console.log(res)
+		//Muy importante que devuelva el res pues devolvera la tarea en especifico con sus propiedades title description y otras que usaremos al final para seleccionar la tarea y editarla con sus propiedades actuales
+		return res.data
 	}
 
+	//Funcion que atualiza las tareas mediante el llamando de un endpoint en el backend
+	const updateTask = async(id, task) => {
+		try {
+			await updateTaskRequest(id, task)
+		} catch (error) {
+			console.log(error)
+		}
+	}
 
 
 	return(
@@ -63,7 +74,8 @@ export function TaskProvider({ children}) {
 			getTasks, 
 			createTask,
 			deleteTask,
-			getTask
+			getTask,
+			updateTask
 		}}>
 			{children}
 		</TaskContext.Provider>

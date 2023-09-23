@@ -29,7 +29,7 @@ const Navbar = () => {
 							</li>
 						</Link>
 						<li>
-							<Link to='/' onClick={() => logout()}>Logout</Link>
+							<Link to='/' onClick={() => logout()} className='bg-indigo-500 px-4 py-1' >Logout</Link>
 						</li>
 					</>
 				) : (

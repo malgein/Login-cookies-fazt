@@ -8,6 +8,7 @@ const TaskPage = () => {
 
   useEffect(() => {
     //Trae todas las tareas
+    // console.log(tasks)
     getTasks()
   }, [])
   
@@ -15,7 +16,7 @@ const TaskPage = () => {
   if(tasks.length ===0) return <h1>No hay tareas</h1>
 
   return (
-    <div className='grid grid-col-3 gap-2'>
+    <div className='grid sm:grid-cols-2 md:grid-cols-3 gap-2'>
       {/* {console.log(tasks)} */}
       {/* finalmente recoreemos todas las tareas para mostrarlas en el componente */}
       {tasks.map(task => (
