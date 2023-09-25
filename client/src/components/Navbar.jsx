@@ -7,7 +7,7 @@ const Navbar = () => {
 
 	return (
 		<nav className='bg-zinc-700 my-3 flex justify-between py-5 px-10 rounded-lg'>
-			<Link to='/'>
+			<Link to={isAuthenticated ? "/taks" : "/"}>
 				<h1 className='text-2xl font-bold' >
 					Task Manager
 				</h1>
@@ -29,7 +29,7 @@ const Navbar = () => {
 							</li>
 						</Link>
 						<li>
-							<Link to='/' onClick={() => logout()} className='bg-indigo-500 px-4 py-1' >Logout</Link>
+							<Link to='/' onClick={() => logout()} className='bg-red-600 px-4 py-1' >Logout</Link>
 						</li>
 					</>
 				) : (

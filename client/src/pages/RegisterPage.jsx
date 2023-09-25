@@ -31,62 +31,66 @@ const RegisterPage = () => {
   
 
   return (
-    <div className='bg-zinc-800 max-w-md p-10 rounded-md '>
-      {/* El siguiente mapeo envia una notificacion de los errores mapeados y renderizados al principio de los inputs si  existen estos errores como el de el usuario ya existe  los muestra*/}
-      {
-        registerErrors.map((error, i) => {
-          return(
-          <div key={i} className='bg-red-500 p-2 text-white'>
-            {error}
-          </div>
-          )
-        })
-      }
-      {/* Metodo handleSubmit de useForm() recibe un callback cuyo parametro son los valores que ingresamos en los inputs dentro imprimos value en la consola lo que nos dara el valor de los inputs */}
-			<form onSubmit={onSubmit}
-        //guardamos en una contante el valor de registrar un usuario en nuestro backend pasandole pasandole como datos para crearlo los valores de nuestro input
-       >
-				<input
-          type="text"
-          name="username"
-          placeholder="Write your username "
-          {...register("username", {required: true})}
-          autoFocus
-					className='w-full bg-zinc-700 text-white px-1 py-2 my-2 rounded-md'
-        />
-          {errors.username && (
-          <p className="text-red-500">Username is required</p>
-          )}
-				<input
-          type="email"
-          name="username"
-          placeholder="Write your email"
-          {...register("email", {required: true})}
-          autoFocus
-					className='w-full bg-zinc-700 text-white px-1 py-2 rounded-md my-2'
-        />
-          {errors.email && (
-          <p className="text-red-500">Email is required</p>
-          )}
-				<input
-          type="password"
-          name="password"
-          placeholder="Write your password"
-          {...register("password", {required: true})}
-          autoFocus
-					className='w-full bg-zinc-700 text-white px-1 py-2 rounded-md my-2'
-        />
-          {errors.password && (
-          <p className="text-red-500">password is required</p>
-          )}
-				<button type='submit'>Register</button>
-			</form>
-      <p>
-          Already Have an Account?
-          <Link className="text-sky-500" to="/login">
-            Login
-          </Link>
-        </p>
+    // Al igual que em login estos estilos convierten el register en un cotenedor tipo carta y lo centran en el medio de la pagina
+    <div className='flex h-[calc(100vh-100px)] items-center justify-center'>
+      <div className='bg-zinc-800 max-w-md p-10 rounded-md '>
+        {/* El siguiente mapeo envia una notificacion de los errores mapeados y renderizados al principio de los inputs si  existen estos errores como el de el usuario ya existe  los muestra*/}
+        {
+          registerErrors.map((error, i) => {
+            return(
+            <div key={i} className='bg-red-500 p-2 text-white'>
+              {error}
+            </div>
+            )
+          })
+        }
+        {/* Metodo handleSubmit de useForm() recibe un callback cuyo parametro son los valores que ingresamos en los inputs dentro imprimos value en la consola lo que nos dara el valor de los inputs */}
+        <form onSubmit={onSubmit}
+          //guardamos en una contante el valor de registrar un usuario en nuestro backend pasandole pasandole como datos para crearlo los valores de nuestro input
+        >
+          <h1 className='text-3xl font-bold my-2'>Register</h1>
+          <input
+            type="text"
+            name="username"
+            placeholder="Write your username "
+            {...register("username", {required: true})}
+            autoFocus
+            className='w-full bg-zinc-700 text-white px-1 py-2 my-2 rounded-md'
+          />
+            {errors.username && (
+            <p className="text-red-500">Username is required</p>
+            )}
+          <input
+            type="email"
+            name="username"
+            placeholder="Write your email"
+            {...register("email", {required: true})}
+            autoFocus
+            className='w-full bg-zinc-700 text-white px-1 py-2 rounded-md my-2'
+          />
+            {errors.email && (
+            <p className="text-red-500">Email is required</p>
+            )}
+          <input
+            type="password"
+            name="password"
+            placeholder="Write your password"
+            {...register("password", {required: true})}
+            autoFocus
+            className='w-full bg-zinc-700 text-white px-1 py-2 rounded-md my-2'
+          />
+            {errors.password && (
+            <p className="text-red-500">password is required</p>
+            )}
+          <button type='submit'>Register</button>
+        </form>
+        <p>
+            Already Have an Account?
+            <Link className="text-sky-500" to="/login">
+              Login
+            </Link>
+          </p>
+      </div>
     </div>
   )
 }

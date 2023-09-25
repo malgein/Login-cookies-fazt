@@ -5,6 +5,9 @@ import {useForm} from 'react-hook-form'
 import { useTasks } from '../context/TaskContext'
 import Swal from 'sweetalert2'
 import { useNavigate, useParams } from 'react-router-dom'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+dayjs.extend(utc)
 
 
 const TaskFormPage = () => {
@@ -21,12 +24,19 @@ const TaskFormPage = () => {
   // console.log(createTask)
 
   //funcion que dentro contiene el metodo handlesubmit de la libreria y que tiene como argumento el vaor de los inputs
-  const onSubmit = handleSubmit((data) => {
+  const onSubmit = handleSubmit ( async(data) => {
+
+    const dataValid = {
+      ...data,
+      date: data.date ? dayjs.utc(data.date).format() : dayjs.utc().format()
+    }
+
+    // if(data.date) dataValid.date= dayjs.utc(data.date).format()
     //pregunta si existe un params con id 
     //!Si existe significa que estamos editando 
     //Llamando asi la funcion del context que llama la accion que hace el peiddo al backend para modificar tareas
     if(params.id){
-      updateTask(params.id, data)
+      updateTask(params.id, dataValid)
       Swal.fire(
         'Tarea modificada con exito!',
         '',
@@ -35,7 +45,7 @@ const TaskFormPage = () => {
       //!Si no existe params significa que estamos creando tareas
       //llamando a la accion de crear tareas del context que llama al endpoint del backend que crea las tareas
     } else{
-      createTask(data)
+      createTask(dataValid)
       Swal.fire(
         'Tarea creada con exito!',
         '',
@@ -44,6 +54,7 @@ const TaskFormPage = () => {
     }
     // console.log(data)
     navigate('/tasks')
+    
   })
 
   useEffect(() => {
@@ -56,8 +67,15 @@ const TaskFormPage = () => {
         const task = await getTask(params.id)
         console.log(task)
         //setValue es un metodo de useForm que establece el valor de los inputs en las siguientes lienas establece el title y el description de los inputs al title y description de la tarea por id que estamos buscando para asi editarlo
+        //tomamos el value de useForm y en el input con el nombre de title le pasamos el valor de la tearea por id pero solo su titulo
         setValue('title', task.title)
+        //Aqui hacemos lo mismo que arriba pero establecemos el input con el nombre de descripcion y se los pasamos a la taera en su seccion de description
         setValue('description', task.description)
+        //y finalmente hacemos lo mismo caue los dos anteriores pero con la fecha correspondiente
+        setValue(
+          "date",
+          task.date ? dayjs(task.date).utc().format("YYYY-MM-DD") : ""
+        );
       }
     }
     loadTask();
@@ -66,18 +84,20 @@ const TaskFormPage = () => {
   
 
   return (
-    <div className='bg-zinc-800 max-w-md w-full p-10 rounded-md'>
-      <form onSubmit={onSubmit}>
-      <label htmlFor="title">Title</label>
-        <input type='text' placeholder='Title' {...register('title')} autoFocus className='w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2'/>
-        <label htmlFor="description">Description</label>
-        <textarea rows="3" placeholder='description' {...register('description')} className='w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2'></textarea>
-        <label htmlFor="date">Date</label>
-        <input type="date" name="date" className='w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2' {...register("date")} />
-        <button type='submit' className='bg-indigo-500 px-3 py-2 rounded-md'>
-          Save
-        </button>
-      </form>
+    <div className='flex h-[calc(100vh-100px)] items-center justify-center'>
+      <div className='bg-zinc-800 max-w-md w-full p-10 rounded-md'>
+        <form onSubmit={onSubmit}>
+        <label htmlFor="title">Title</label>
+          <input type='text' placeholder='Title' {...register('title')} autoFocus className='w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2'/>
+          <label htmlFor="description">Description</label>
+          <textarea rows="3" placeholder='description' {...register('description')} className='w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2'></textarea>
+          <label htmlFor="date">Date</label>
+          <input type="date" name="date" className='w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2' {...register("date")} />
+          <button type='submit' className='bg-indigo-500 px-3 py-2 rounded-md'>
+            Save
+          </button>
+        </form>
+      </div>
     </div>
   )
 }
